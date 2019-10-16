@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "anotherexpotest",
-    "slug": "anotherexpotest",
+    "name": "simplecalculator",
+    "slug": "simplecalculator",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -25,6 +25,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "simple calculator app from the tutorial by codedamn ",
+    "githubUrl": "https://github.com/Maxe12/simplecalculator.git"
   }
 }
