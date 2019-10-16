@@ -6,7 +6,8 @@ export default class App extends Component {
   constructor(){
     super();
     this.state = {
-      resultText: "", 
+      resultText: "",
+      commaIsSet: false,  
     };
   }
 
@@ -14,29 +15,47 @@ export default class App extends Component {
     switch(buttonText){
       case 'C':
         const term = this.state.resultText.split('')
-        console.log(term)
+        let lastIndex = term[term.length - 1]
+        const commaStateDecider = this.getCommaDecider(lastIndex)
         term.pop()
         this.setState({
-          resultText: term.join('')
+          resultText: term.join(''), 
+          commaIsSet: commaStateDecider,
         }) 
     }
   }
 
-  numButtonHandler(buttonText){
-    console.log(this.state.resultText)
-    if(this.state.resultText === "NaN"){
-      this.setState({
-        resultText : buttonText.toString()
-      })
-      return 
-    }
-    else if(buttonText === '='){
-      return this.calcRst()
+  getCommaDecider(lastIndex){
+    if(lastIndex === ","){
+      return false;
+    }else if(this.state.commaIsSet){
+      return true
     }else {
-      const sum = this.state.resultText + buttonText 
-      this.setState({
-        resultText : sum
-      })
+      return false
+    }
+  }
+
+  numButtonHandler(buttonText){
+    const temp = this.state.resultText
+    switch(buttonText.toString()){
+      case "=" : 
+        return this.calcRst()
+      case "," : 
+        if (temp.charAt(temp.length - 1) === ',' || this.state.commaIsSet){
+          return 
+        } else {
+          this.setState({
+            resultText: temp + buttonText, 
+            commaIsSet: true, 
+          })
+          return
+        }
+      default: //for every numberinput
+        this.setState({
+          resultText: this.state.resultText + buttonText, 
+          commaIsSet: this.state.commaIsSet,
+        })
+        return 
     }
   }
 
@@ -45,7 +64,7 @@ export default class App extends Component {
     this.setState({
       resultText: "NaN"
     }) 
-    /**@todo split input and calc result */
+    /**@todo split input and calc result with eval() */
   }
 
   render(){
@@ -55,16 +74,16 @@ export default class App extends Component {
     for(let i = 0; i < 4; i++){
       let row = []
       for(let j = 0; j < 3; j++){
-        row.push(<TouchableOpacity style={styles.touchable} onPress={() => this.numButtonHandler(items[i][j])}><Text style={styles.btnText}>{items[i][j]}
+        row.push(<TouchableOpacity key={items[i][j]} style={styles.touchable} onPress={() => this.numButtonHandler(items[i][j])}><Text style={styles.btnText}>{items[i][j]}
         </Text></TouchableOpacity>)
       }
-      numElems.push(<View style={styles.row}>{row}</View>)
+      numElems.push(<View key={i} style={styles.row}>{row}</View>)
     }
 
     let operators = ['C', '+', '-', '*', '/']
     let opElems = [];
     for(let i = 0; i < 5; i++){
-      opElems.push(<TouchableOpacity style={styles.touchable} onPress={() => this.opButtonHandler(operators[i])}><Text style={styles.btnText}>{operators[i]}</Text></TouchableOpacity>)
+      opElems.push(<TouchableOpacity key={operators[i]} style={styles.touchable} onPress={() => this.opButtonHandler(operators[i])}><Text style={styles.btnText}>{operators[i]}</Text></TouchableOpacity>)
     }
     
     return (
